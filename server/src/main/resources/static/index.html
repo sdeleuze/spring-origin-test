@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Same Origin</title>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+
+</head>
+<body>
+    <h1>SockJS same-origin</h1>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            var url = 'http://localhost:7070/stomp';
+            var connected = false;
+            var socket;
+            var stompClient;
+            $('#protocol').change(function() {
+                $('#output').empty();
+                if(connected == true) {
+                    stompClient.disconnect();
+                }
+                var protocol = $("#protocol").val();
+                var options = {debug: true};
+                if(protocol != 'auto') {
+                    options = {debug: true, protocols_whitelist: [protocol]}
+                }
+                socket = new SockJS(url, null, options);
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function(frame) {
+                    connected = true;
+                    $('#output').append('Connected: ' + frame + '<br />');
+                    stompClient.subscribe('/topic/push', function(message) {
+                        $('#output').append('Message received: ' + message.body + '<br />');
+                    });
+                }, function(error) {
+                    $('#output').append('STOMP protocol error: ' + error + '<br />');
+                });
+            });
+
+
+        });
+    </script>
+
+    <div>
+        <select id="protocol" size="10">
+            <option value="auto">Automatic</option>
+            <option value="websocket">websocket</option>
+            <option value="xhr-streaming">xhr-streaming</option>
+            <option value="xhr-polling">xhr-polling</option>
+            <option value="iframe-eventsource">iframe-eventsource</option>
+            <option value="iframe-htmlfile">iframe-htmlfile</option>
+            <option value="iframe-xhr-polling">iframe-xhr-polling</option>
+            <option value="jsonp-polling">jsonp-polling</option>
+            <option value="xdr-streaming">xdr-streaming</option>
+            <option value="xdr-polling">xdr-polling</option>
+        </select>
+    </div>
+    <p id="output"></p>
+
+</body>
+
