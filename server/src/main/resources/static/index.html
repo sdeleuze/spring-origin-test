@@ -4,49 +4,30 @@
     <meta charset="utf-8">
     <title>Same Origin</title>
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <script src="https://code.jquery.com/jquery-1.11.2.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+        function addEvent(evnt, elem, func) {
+            if (elem.addEventListener)  // W3C DOM
+                elem.addEventListener(evnt,func,false);
+            else if (elem.attachEvent) { // IE DOM
+                elem.attachEvent("on"+evnt, func);
+            }
+            else { // No much to do
+                elem[evnt] = func;
+            }
+        }
+
+        function print(message) {
+            var elem = document.createElement('span');
+            elem.innerHTML = message + '<br />';
+            document.getElementById('output').appendChild(elem);
+        }
+    </script>
+    <script src="http://cdn.sockjs.org/sockjs-0.3.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
 
 </head>
 <body>
     <h1>SockJS same-origin</h1>
-    <script type="text/javascript">
-        $(document).ready(function(){
-
-            var url = 'http://localhost:7070/stomp';
-            var connected = false;
-            var socket;
-            var stompClient;
-            $('#protocol').change(function() {
-                $('#output').empty();
-                if(connected == true) {
-                    stompClient.disconnect();
-                }
-                var protocol = $("#protocol").val();
-                var options = {debug: true};
-                if(protocol != 'auto') {
-                    options = {debug: true, protocols_whitelist: [protocol]}
-                }
-                socket = new SockJS(url, null, options);
-                stompClient = Stomp.over(socket);
-                stompClient.connect({}, function(frame) {
-                    connected = true;
-                    $('#output').append('Connected: ' + frame + '<br />');
-                    stompClient.subscribe('/topic/push', function(message) {
-                        $('#output').append('Message received: ' + message.body + '<br />');
-                    });
-                }, function(error) {
-                    $('#output').append('STOMP protocol error: ' + error + '<br />');
-                });
-            });
-
-
-        });
-    </script>
 
     <div>
         <select id="protocol" size="10">
@@ -63,6 +44,44 @@
         </select>
     </div>
     <p id="output"></p>
+
+    <script type="text/javascript">
+        var url = 'http://' + document.domain + ':7070/stomp';
+        var connected = false;
+        var socket;
+        var stompClient;
+
+        if (!window.console) {
+            console = {
+                log: function (message) {
+                    print('LOG: ' + message);
+                }
+            };
+        }
+
+        addEvent("change", document.getElementById('protocol'), function() {
+            document.getElementById('output').innerHTML = '';
+            if(connected == true) {
+                stompClient.disconnect();
+            }
+            var protocol = document.getElementById('protocol').value;
+            var options = {debug: true};
+            if(protocol != 'auto') {
+                options = {debug: true, protocols_whitelist: [protocol]}
+            }
+            socket = new SockJS(url, null, options);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                connected = true;
+                print('Connected: ' + frame);
+                stompClient.subscribe('/topic/push', function(message) {
+                    print('Message received: ' + message.body);
+                });
+            }, function(error) {
+                print('STOMP protocol error: ' + error);
+            });
+        });
+    </script>
 
 </body>
 

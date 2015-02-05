@@ -1,6 +1,6 @@
 package server;
 
-import client.ClientApplication;
+import crossorigin.CrossOriginApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -8,9 +8,9 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ClientApplication.class)
+@SpringApplicationConfiguration(classes = CrossOriginApplication.class)
 @WebAppConfiguration
-public class ClientApplicationTests {
+public class CrossOriginApplicationTests {
 
 	@Test
 	public void contextLoads() {

@@ -25,7 +25,7 @@ buildscript {
 
 
 jar {
-    baseName = 'origin-client'
+    baseName = 'origin-crossorigin'
     version = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = 1.7
