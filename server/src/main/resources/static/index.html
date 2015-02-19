@@ -29,6 +29,8 @@
 <body>
     <h1>SockJS same-origin</h1>
 
+    <h2>SockJS + STOMP</h2>
+
     <div>
         <select id="protocol" size="10">
             <option value="auto">Automatic</option>
@@ -43,10 +45,20 @@
             <option value="xdr-polling">xdr-polling</option>
         </select>
     </div>
+
+    <h2>Websocket</h2>
+
+    <button id="websocket-connect">Connect</button>
+
+    <h2>Output</h2>
+
+
     <p id="output"></p>
 
     <script type="text/javascript">
-        var url = 'http://' + document.domain + ':7070/stomp';
+        var sockJSStompUrl = 'http://' + document.domain + ':7070/stomp';
+        //var sockJSStompUrl = 'http://10.0.2.2:7070/stomp';
+        var websocketUrl = 'ws://' + document.domain + ':7070/myHandler';
         var connected = false;
         var socket;
         var stompClient;
@@ -69,7 +81,7 @@
             if(protocol != 'auto') {
                 options = {debug: true, protocols_whitelist: [protocol]}
             }
-            socket = new SockJS(url, null, options);
+            socket = new SockJS(sockJSStompUrl, null, options);
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
                 connected = true;
@@ -81,6 +93,14 @@
                 print('STOMP protocol error: ' + error);
             });
         });
+
+        addEvent("click", document.getElementById('websocket-connect'), function() {
+            var connection = new WebSocket(websocketUrl);
+            connection.onmessage = function(message) {
+                print('Message received: ' + message.data);
+            };
+        });
+
     </script>
 
 </body>

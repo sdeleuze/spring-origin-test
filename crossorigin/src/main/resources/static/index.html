@@ -6,9 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
     <script type="text/javascript">
         function addEvent(evnt, elem, func) {
-            if (elem.addEventListener) { // W3C DOM
+            if (elem.addEventListener)  // W3C DOM
                 elem.addEventListener(evnt,func,false);
-            }
             else if (elem.attachEvent) { // IE DOM
                 elem.attachEvent("on"+evnt, func);
             }
@@ -23,67 +22,86 @@
             document.getElementById('output').appendChild(elem);
         }
     </script>
-    <script src="http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script src="http://cdn.sockjs.org/sockjs-0.3.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
 
 </head>
 <body>
-<h1>SockJS cross-origin</h1>
+    <h1>SockJS cross-origin</h1>
 
-<div>
-    <select id="protocol" size="10">
-        <option value="auto">Automatic</option>
-        <option value="websocket">websocket</option>
-        <option value="xhr-streaming">xhr-streaming</option>
-        <option value="xhr-polling">xhr-polling</option>
-        <option value="iframe-eventsource">iframe-eventsource</option>
-        <option value="iframe-htmlfile">iframe-htmlfile</option>
-        <option value="iframe-xhr-polling">iframe-xhr-polling</option>
-        <option value="jsonp-polling">jsonp-polling</option>
-        <option value="xdr-streaming">xdr-streaming</option>
-        <option value="xdr-polling">xdr-polling</option>
-    </select>
-</div>
-<p id="output"></p>
+    <h2>SockJS + STOMP</h2>
 
-<script type="text/javascript">
-    var url = 'http://' + document.domain + ':7070/stomp';
-    //var url = 'http://10.0.2.2:7070/stomp';
-    var connected = false;
-    var socket;
-    var stompClient;
+    <div>
+        <select id="protocol" size="10">
+            <option value="auto">Automatic</option>
+            <option value="websocket">websocket</option>
+            <option value="xhr-streaming">xhr-streaming</option>
+            <option value="xhr-polling">xhr-polling</option>
+            <option value="iframe-eventsource">iframe-eventsource</option>
+            <option value="iframe-htmlfile">iframe-htmlfile</option>
+            <option value="iframe-xhr-polling">iframe-xhr-polling</option>
+            <option value="jsonp-polling">jsonp-polling</option>
+            <option value="xdr-streaming">xdr-streaming</option>
+            <option value="xdr-polling">xdr-polling</option>
+        </select>
+    </div>
 
-    if (!window.console) {
-        console = {
-            log: function (message) {
-                print('LOG: ' + message);
+    <h2>Websocket</h2>
+
+    <button id="websocket-connect">Connect</button>
+
+    <h2>Output</h2>
+
+
+    <p id="output"></p>
+
+    <script type="text/javascript">
+        var sockJSStompUrl = 'http://' + document.domain + ':7070/stomp';
+        //var sockJSStompUrl = 'http://10.0.2.2:7070/stomp';
+        var websocketUrl = 'ws://' + document.domain + ':7070/myHandler';
+        var connected = false;
+        var socket;
+        var stompClient;
+
+        if (!window.console) {
+            console = {
+                log: function (message) {
+                    print('LOG: ' + message);
+                }
+            };
+        }
+
+        addEvent("change", document.getElementById('protocol'), function() {
+            document.getElementById('output').innerHTML = '';
+            if(connected == true) {
+                stompClient.disconnect();
             }
-        };
-    }
-
-    addEvent("change", document.getElementById('protocol'), function() {
-        document.getElementById('output').innerHTML = '';
-        if(connected == true) {
-            stompClient.disconnect();
-        }
-        var protocol = document.getElementById('protocol').value;
-        var options = {debug: true};
-        if(protocol != 'auto') {
-            options = {debug: true, protocols_whitelist: [protocol]}
-        }
-        socket = new SockJS(url, null, options);
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function(frame) {
-            connected = true;
-            print('Connected: ' + frame);
-            stompClient.subscribe('/topic/push', function(message) {
-                print('Message received: ' + message.body);
+            var protocol = document.getElementById('protocol').value;
+            var options = {debug: true};
+            if(protocol != 'auto') {
+                options = {debug: true, protocols_whitelist: [protocol]}
+            }
+            socket = new SockJS(sockJSStompUrl, null, options);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                connected = true;
+                print('Connected: ' + frame);
+                stompClient.subscribe('/topic/push', function(message) {
+                    print('Message received: ' + message.body);
+                });
+            }, function(error) {
+                print('STOMP protocol error: ' + error);
             });
-        }, function(error) {
-            print('STOMP protocol error: ' + error);
         });
-    });
-</script>
+
+        addEvent("click", document.getElementById('websocket-connect'), function() {
+            var connection = new WebSocket(websocketUrl);
+            connection.onmessage = function(message) {
+                print('Message received: ' + message.data);
+            };
+        });
+
+    </script>
 
 </body>
 
