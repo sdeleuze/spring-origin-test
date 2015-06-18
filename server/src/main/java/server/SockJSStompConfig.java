@@ -15,8 +15,8 @@ public class SockJSStompConfig extends AbstractWebSocketMessageBrokerConfigurer 
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/stomp").withSockJS().setClientLibraryUrl("http://cdn.sockjs.org/sockjs-0.3.js");
-		//registry.addEndpoint("/stomp").setAllowedOrigins("*").withSockJS().setClientLibraryUrl("http://cdn.sockjs.org/sockjs-0.3.js");
+		//registry.addEndpoint("/stomp").withSockJS().setClientLibraryUrl("http://cdn.sockjs.org/sockjs-0.3.js");
+		registry.addEndpoint("/stomp").setAllowedOrigins("*").withSockJS().setClientLibraryUrl("http://cdn.sockjs.org/sockjs-0.3.js");
 		//registry.addEndpoint("/stomp").setAllowedOrigins("http://localhost:7070", "http://localhost:8080", "http://10.0.2.2:7070", "http://10.0.2.2:8080", "http://testdomain:8080").withSockJS().setClientLibraryUrl("http://cdn.sockjs.org/sockjs-0.3.js");
 		//registry.addEndpoint("/stomp").setAllowedOrigins("http://toto:8080").withSockJS().setClientLibraryUrl("http://cdn.sockjs.org/sockjs-0.3.js");
 	}

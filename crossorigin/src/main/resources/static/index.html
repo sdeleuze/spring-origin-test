@@ -23,7 +23,7 @@
         }
     </script>
     <script src="http://cdn.sockjs.org/sockjs-0.3.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script src="stomp.js"></script>
 
 </head>
 <body>
@@ -49,6 +49,12 @@
     <h2>Websocket</h2>
 
     <button id="websocket-connect">Connect</button>
+
+    <h2>REST</h2>
+
+    <button id="get-request">Send GET XmlHttpRequest</button>
+
+    <button id="put-request">Send PUT XmlHttpRequest</button>
 
     <h2>Output</h2>
 
@@ -87,8 +93,15 @@
                 connected = true;
                 print('Connected: ' + frame);
                 stompClient.subscribe('/topic/push', function(message) {
-                    print('Message received: ' + message.body);
+                    print('Message received on /topic/push: ' + message.body);
                 });
+                stompClient.subscribe('/app/foo', function(message) {
+                    print('Message received on /app/foo: ' + message.body);
+                });
+                stompClient.subscribe('/topic/bar', function(message) {
+                    print('Message received on /topic/bar: ' + message.body);
+                });
+                stompClient.send('/app/bar', {}, {});
             }, function(error) {
                 print('STOMP protocol error: ' + error);
             });
@@ -99,6 +112,22 @@
             connection.onmessage = function(message) {
                 print('Message received: ' + message.data);
             };
+        });
+
+        addEvent("click", document.getElementById('get-request'), function() {
+            var req = new XMLHttpRequest();
+            req.open('GET', 'http://' + document.domain + ':7070/hello', false);
+            req.send(null);
+            if(req.status == 200)
+                print('Response received: ' + req.responseText);
+        });
+
+        addEvent("click", document.getElementById('put-request'), function() {
+            var req = new XMLHttpRequest();
+            req.open('PUT', 'http://' + document.domain + ':7070/hello', false);
+            req.send("This is a test!");
+            if(req.status == 200)
+                print('Response received: ' + req.responseText);
         });
 
     </script>

@@ -27,8 +27,8 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  * @author Sebastien Deleuze
  */
 //@Configuration
-@EnableWebSocket
-@EnableScheduling
+//@EnableWebSocket
+//@EnableScheduling
 public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Override
