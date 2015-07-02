@@ -79,7 +79,7 @@
             }
             var transport = document.getElementById('transports').value;
             var options = {debug: true};
-            if(protocol != 'auto') {
+            if(transport != 'auto') {
                 options = {debug: true, transports: [transport]}
             }
             socket = new SockJS(sockJSStompUrl, null, options);
