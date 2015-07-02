@@ -22,7 +22,7 @@
             document.getElementById('output').appendChild(elem);
         }
     </script>
-    <script src="http://cdn.sockjs.org/sockjs-0.3.js"></script>
+    <script src="https://cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
     <script src="stomp.js"></script>
 
 </head>
@@ -32,11 +32,12 @@
     <h2>SockJS + STOMP</h2>
 
     <div>
-        <select id="protocol" size="10">
+        <select id="transports" size="10">
             <option value="auto">Automatic</option>
             <option value="websocket">websocket</option>
             <option value="xhr-streaming">xhr-streaming</option>
             <option value="xhr-polling">xhr-polling</option>
+            <option value="eventsource">eventsource</option>
             <option value="iframe-eventsource">iframe-eventsource</option>
             <option value="iframe-htmlfile">iframe-htmlfile</option>
             <option value="iframe-xhr-polling">iframe-xhr-polling</option>
@@ -77,15 +78,15 @@
             };
         }
 
-        addEvent("change", document.getElementById('protocol'), function() {
+        addEvent("change", document.getElementById('transports'), function() {
             document.getElementById('output').innerHTML = '';
             if(connected == true) {
                 stompClient.disconnect();
             }
-            var protocol = document.getElementById('protocol').value;
+            var transport = document.getElementById('transports').value;
             var options = {debug: true};
-            if(protocol != 'auto') {
-                options = {debug: true, protocols_whitelist: [protocol]}
+            if(transport != 'auto') {
+                options = {debug: true, transports: [transport]}
             }
             socket = new SockJS(sockJSStompUrl, null, options);
             stompClient = Stomp.over(socket);
