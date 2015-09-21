@@ -36,13 +36,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MyController {
 
-	@CrossOrigin(maxAge = 3600)
+	//@CrossOrigin
 	@RequestMapping("/hello")
 	public String getHelloWorld() {
 		return "hello World!";
 	}
 
-	@CrossOrigin
+	//@CrossOrigin
 	@RequestMapping(method = RequestMethod.PUT, value = "/hello")
 	public String putHelloWorld(@RequestBody String body) {
 		return "hello World! " + body;

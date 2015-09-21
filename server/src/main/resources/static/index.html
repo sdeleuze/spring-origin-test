@@ -51,6 +51,12 @@
 
     <button id="websocket-connect">Connect</button>
 
+    <h2>REST</h2>
+
+    <button id="get-request">Send GET XmlHttpRequest</button>
+
+    <button id="put-request">Send PUT XmlHttpRequest</button>
+
     <h2>Output</h2>
 
 
@@ -100,6 +106,22 @@
             connection.onmessage = function(message) {
                 print('Message received: ' + message.data);
             };
+        });
+
+        addEvent("click", document.getElementById('get-request'), function() {
+            var req = new XMLHttpRequest();
+            req.open('GET', 'http://' + document.domain + ':7070/hello', false);
+            req.send(null);
+            if(req.status == 200)
+                print('Response received: ' + req.responseText);
+        });
+
+        addEvent("click", document.getElementById('put-request'), function() {
+            var req = new XMLHttpRequest();
+            req.open('PUT', 'http://' + document.domain + ':7070/hello', false);
+            req.send("This is a test!");
+            if(req.status == 200)
+                print('Response received: ' + req.responseText);
         });
 
     </script>
