@@ -57,6 +57,10 @@
 
     <button id="put-request">Send PUT XmlHttpRequest</button>
 
+    <h2>SSE</h2>
+
+    <button id="sse-subscribe">Subscribe</button>
+
     <h2>Output</h2>
 
 
@@ -66,6 +70,7 @@
         var sockJSStompUrl = 'http://' + document.domain + ':7070/stomp';
         //var sockJSStompUrl = 'http://10.0.2.2:7070/stomp';
         var websocketUrl = 'ws://' + document.domain + ':7070/myHandler';
+        var sseUrl =  'http://' + document.domain + ':7070/sse';
         var connected = false;
         var socket;
         var stompClient;
@@ -104,7 +109,7 @@
         addEvent("click", document.getElementById('websocket-connect'), function() {
             var connection = new WebSocket(websocketUrl);
             connection.onmessage = function(message) {
-                print('Message received: ' + message.data);
+                print('Websocket message received: ' + message.data);
             };
         });
 
@@ -122,6 +127,13 @@
             req.send("This is a test!");
             if(req.status == 200)
                 print('Response received: ' + req.responseText);
+        });
+
+        addEvent("click", document.getElementById('sse-subscribe'), function() {
+            var source = new EventSource(sseUrl);
+            source.addEventListener('message', function(message) {
+                print('SSE message received: ' + message.data);
+            });
         });
 
     </script>

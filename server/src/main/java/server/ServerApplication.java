@@ -14,15 +14,4 @@ public class ServerApplication {
         SpringApplication.run(ServerApplication.class, args);
     }
 
-    @Bean
-    public WebMvcConfigurer mvcConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("GET", "PUT");
-            }
-        };
-    }
-
-
 }

@@ -16,10 +16,14 @@
 
 package server;
 
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
  * @author Sebastien Deleuze
@@ -36,13 +41,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MyController {
 
-	//@CrossOrigin
+	@CrossOrigin
 	@RequestMapping("/hello")
 	public String getHelloWorld() {
 		return "hello World!";
 	}
 
-	//@CrossOrigin
+	@CrossOrigin
 	@RequestMapping(method = RequestMethod.PUT, value = "/hello")
 	public String putHelloWorld(@RequestBody String body) {
 		return "hello World! " + body;
@@ -51,6 +56,27 @@ public class MyController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/hello2")
 	public String putHelloWorld2(@RequestBody String body) {
 		return "hello World! " + body;
+	}
+
+	@CrossOrigin
+	@RequestMapping("/sse")
+	SseEmitter sse() throws IOException {
+		final SseEmitter sseEmitter = new SseEmitter();
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					sseEmitter.send("Hey!", MediaType.APPLICATION_JSON);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}, 1000, 1000);
+
+
+		return sseEmitter;
 	}
 	
 	private interface MyJacksonView1 {}
