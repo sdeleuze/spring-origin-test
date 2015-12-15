@@ -34,11 +34,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/index.html").addResourceLocations("classpath:static/index.html");
 	}
 
-	//@Override
-	//public void addCorsMappings(CorsRegistry registry) {
-	//	registry.addMapping("/api/**").allowedOrigins("http://domain2.com")
-	//			.allowedMethods("PUT", "DELETE").allowedHeaders("header1", "header2", "header3")
-	//			.exposedHeaders("header1", "header2").allowCredentials(false).maxAge(3600);
-	//}
+//	@Override
+//	public void addCorsMappings(CorsRegistry registry) {
+//		registry.addMapping("/**").allowedOrigins("http://localhost:7070", "http://localhost:8080", "http://10.0.2.2:7070", "http://10.0.2.2:8080", "http://testdomain:8080")
+//				.allowedMethods("*").allowedHeaders("*").allowCredentials(false).maxAge(3600);
+//	}
 
 }

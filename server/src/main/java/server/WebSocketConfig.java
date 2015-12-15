@@ -28,15 +28,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  */
 //@Configuration
 //@EnableWebSocket
-//@EnableScheduling
 public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		//registry.addHandler(myHandler(), "/myHandler");
+		registry.addHandler(myHandler(), "/myHandler");
 		//registry.addHandler(myHandler(), "/myHandler").setAllowedOrigins("*");
 		//registry.addHandler(myHandler(), "/myHandler").setAllowedOrigins("http://localhost:7070", "http://localhost:8080", "http://10.0.2.2:7070", "http://10.0.2.2:8080", "http://testdomain:8080");
-		registry.addHandler(myHandler(), "/myHandler").setAllowedOrigins("http://toto:8080");
+		//registry.addHandler(myHandler(), "/myHandler").setAllowedOrigins("http://toto:8080");
 	}
 
 	@Bean
